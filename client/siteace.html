@@ -3,19 +3,12 @@
 </head>
 
 <body>
-	<!-- navbar  - you will be putting the login functions here -->
-	{{> navbar}}
 
-	<div class="container">
-		{{> website_form}}
-		{{> website_list}}
-	</div>
 </body>
 
 <template name="ApplicationLayout">
   {{> yield "navbar"}}
-  {{> yield "main"}}
-  
+  {{> yield "main"}}  
 </template>
 
 <template name="navbar">
@@ -50,17 +43,27 @@
 	</div>
 </template>
 
-<!-- template that displays several website items -->
-<template name="website_list">
-	<ol>
-	{{#each websites}}
-	{{>website_item}}
-	{{/each}}
-	</ol>
-</template>
+<!-- Template for /websites Route -->
+<template name="websites">
+    <div class="container js-container" >
+	{{#if currentUser}}
+        <button class="btn btn-success js-show-website-form">Add a New Website</button>
+  	{{/if}}
+   <h2>
+   {{#if filtering_images}}
+    Showing Websites by User: {{getFilterUser}}. <a href="#" class="js-unset-website-filter">Show All Websites</a>
+   {{/if}}
+  </h2>
+	<div class="row">
+  {{#each websites}}
+ 	{{>website_item}}
+  {{/each}}
+</div> <!-- / row -->
+</div><!-- / container -->
+  </template>
 
 <!-- template that displays individual website entries -->
-<template name="website_item">
+<template name="website">
 <li>
 	<a href="{{url}}">{{title}}</a>
 	<p>

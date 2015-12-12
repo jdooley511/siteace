@@ -21,11 +21,11 @@ Router.route('/websites', function () {
   });
 });
 
-Router.route('/image/:_id', function () {
+Router.route('/website/:_id', function () {
   this.render('navbar', {
     to:"navbar"
   });
-  this.render('image', {
+  this.render('website', {
     to:"main", 
     data:function(){
       return Websites.findOne({_id:this.params._id});
@@ -33,17 +33,57 @@ Router.route('/image/:_id', function () {
   });
 });
 
+Accounts.ui.config({
+	passwordSignupFields: "USERNAME_AND_EMAIL"
+});
 
 /////
 // template helpers 
 /////
 
-
 // helper function that returns all available websites
 Template.website_list.helpers({
 	websites:function(){
 		return Websites.find({});
-	}
+	},
+	filtering_websites:function(){
+  if (Session.get("userFilter")){// they set a filter!
+    return true;
+  } 
+  else {
+    return false;
+  }
+},
+getFilterUser:function(){
+  if (Session.get("userFilter")){// they set a filter!
+    var user = Meteor.users.findOne(
+      {_id:Session.get("userFilter")});
+    return user.username;
+  } 
+  else {
+    return false;
+  }
+},
+getUser:function(user_id){
+  var user = Meteor.users.findOne({_id:user_id});
+  if (user){
+    return user.username;
+  }
+  else {
+    return "anon";
+  }
+}
+});
+
+Template.body.helpers({username:function(){
+if (Meteor.user()){
+  return Meteor.user().username;
+    //return Meteor.user().emails[0].address;
+}
+else {
+  return "anonymous internet user";
+}
+}
 });
 
 
@@ -51,13 +91,13 @@ Template.website_list.helpers({
 // template events 
 /////
 
-Template.website_item.events({
-	"click .js-upvote":function(event){
-		// example of how you can access the id for the website in the database
-		// (this is the data context for the template)
+Template.website.events({
+	"click .js-upvote":function(event){		
 		var website_id = this._id;
 		console.log("Up voting website with id "+website_id);
 		// put the code in here to add a vote to a website!
+		Websites.update({_id:website_id}, 
+                {$set: {rating:rating}});
 
 		return false;// prevent the button from reloading the page
 	}, 
