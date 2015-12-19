@@ -47,14 +47,7 @@ Accounts.ui.config({
 // helper function that returns all available websites
 Template.website_list.helpers({
   websites: function() {
-    var websites = Websites.find()/*.sort({"upvotes":1})*/;
-    return websites;
-  }
-});
-
-Template.website_detail.helpers({
-  websites: function() {
-    var websites = Websites.find()/*.sort({"upvotes":1})*/;
+    var websites = Websites.find({}, {sort: {"upvotes": -1}});
     return websites;
   }
 });
@@ -156,7 +149,9 @@ Template.website_form.events({
         createdOn:date, 
         description:desc,
         url:url,
-        createdBy:Meteor.user()._id
+        createdBy:Meteor.user()._id,
+        downvotes:0,
+        upvotes:0
       });
     }
     $("#website_form").hide('slow');
@@ -169,16 +164,14 @@ Template.website_form.events({
 
 Template.website_detail.events({
   "submit .js-save-comment-form":function(event) {
-    var comment = event.target.comment.value;
-    alert(comment);
-    console.log(this);
+    var comment = event.target.comment.value;    
     
-    /*if (Meteor.user()){
+    if (Meteor.user()){
       Websites.update(
-        {_id:},
-        {$set:{}}
+        {_id:this._id},
+        {$push:{"comments":comment}}
         );
-    }*/
+    }
     return false;
   }
 });
