@@ -19,10 +19,19 @@
 </nav>
 </template>
 
+<template name="websites">
+	<div class="container">
+		{{> website_form}}
+		{{> website_list}}
+	</div>
+</template>
+
 <template name="website_form">
+	{{#if currentUser}}
 	<a class="btn btn-default js-toggle-website-form" href="#">
-  		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+  		<span class="btn btn-info" aria-hidden="true">Add A New Website</span>
 	</a>
+	{{/if}}
 	<div id="website_form" class="hidden_div">
 		<form class="js-save-website-form">
 		  <div class="form-group">
@@ -40,30 +49,45 @@
 
 		  <button type="submit" class="btn btn-default">Submit</button>
 		</form>
-	</div>
+	</div>	
 </template>
 
 <!-- Template for /websites Route -->
-<template name="websites">
-    <div class="container js-container" >
-	{{#if currentUser}}
-        <button class="btn btn-success js-show-website-form">Add a New Website</button>
-  	{{/if}}
-   <h2>
-   {{#if filtering_images}}
-    Showing Websites by User: {{getFilterUser}}. <a href="#" class="js-unset-website-filter">Show All Websites</a>
-   {{/if}}
-  </h2>
-	<div class="row">
-  {{#each websites}}
- 	{{>website_item}}
-  {{/each}}
-</div> <!-- / row -->
-</div><!-- / container -->
-  </template>
+<template name="website_list">
+	<ol>
+	{{#each websites}}
+	{{>website_item}}
+	{{/each}}
+	</ol>
+</template>
+
+<template name="website_detail">
+	<div class="site_detail">
+		<a href="{{url}}">{{title}}</a>
+		<p>
+			{{description}}
+		</p>
+		<a href="#" class="btn btn-default js-upvote">
+			<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+		</a>
+		<span class="green">{{#if upvotes}}{{upvotes}}{{else}}0{{/if}}&nbsp;&nbsp;</span>
+		<a href="#" class="btn btn-default js-downvote">
+			<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+		</a>
+		<span class="red">{{#if downvotes}}{{downvotes}}{{else}}0{{/if}}</span><br>
+		<b>Website Added on:</b> {{createdOn}}<br>
+		<form class="js-save-comment-form">
+		  <div class="form-group">
+		    <label for="comment">Add A Comment:</label>
+		    <textarea class="form-control" id="comment" name="comment" placeholder="Best Site Ever!"></textarea>
+		  </div>	  
+		  <button type="submit" class="btn btn-default">Submit Comment</button>
+		</form>
+	</div>
+</template>
 
 <!-- template that displays individual website entries -->
-<template name="website">
+<template name="website_item">
 <li>
 	<a href="{{url}}">{{title}}</a>
 	<p>
@@ -72,18 +96,14 @@
 	<a href="#" class="btn btn-default js-upvote">
 		<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
 	</a>
+	<span class="green">{{#if upvotes}}{{upvotes}}{{else}}0{{/if}}&nbsp;&nbsp;</span>
 	<a href="#" class="btn btn-default js-downvote">
 		<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
 	</a>
-	<!-- you will be putting your up and down vote buttons in here! -->
+	<span class="red">{{#if downvotes}}{{downvotes}}{{else}}0{{/if}}</span><br>
+	<b>Website Added on:</b> {{createdOn}}
+	
+	<a href="/websites/{{_id}}">Details</a>
 </li>
-</template>
-
-<template name="welcome">
-  <div class="container">
-    <div class="jumbotron">
-      <h1>Welcome to Web Aggregator {{username}}!</h1>
-      <a href="/websites" class="btn btn-info">ENTER</a>
-    </div>
-  </div>
+<br>
 </template>
